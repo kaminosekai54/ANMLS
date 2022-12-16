@@ -26,12 +26,15 @@ def filterData():
     inat_df = pd.read_csv("inat_data.csv")
     inat_df = inat_df [["quality_grade", "observed_on_details.date", "species_guess", "public_positional_accuracy", "taxon.name", "geojson.coordinates", "owners_identification_from_vision", "identifications_count", "num_identification_disagreements", "location", "place_guess"]]
     latitude = []
+    # print(inat_df.location.tolist())
     for val in inat_df.location.tolist():
-        latitude.append(val[0])
+        lat = float(val.split(",")[0].replace("[", "").replace("]","").replace(",", ""))
+        latitude.append(lat)
     
     longitude= []
     for val in inat_df.location.tolist():
-        longitude.append(val[1])
+        lon= float(val.split(",")[1].replace("[", "").replace("]","").replace(",", ""))
+        longitude.append(lon)
   
     inat_df= inat_df.assign(latitude = latitude)
     inat_df= inat_df.assign(longitude = longitude)
