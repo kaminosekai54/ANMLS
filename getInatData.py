@@ -45,9 +45,28 @@ def filterData():
     inat_df.to_csv("inat_data_filtered.csv", sep=",", index=False)
 
 
+
+def getGrid():
+    latList, longList, densityList = [], [], []
+    # df = pd.read_csv("population_gbr_2019-07-01.csv")
+    # print(df.columns)
+    for i,chunk in enumerate(pd.read_csv("population_gbr_2019-07-01.csv", chunksize=10000)):
+        latList.append(round(chunk.tail(1).Lat.values[0], 3))
+        longList.append(round(chunk.tail(1).Lon.values[0], 3))
+        densityList.append(chunk.Population.sum())
+        # print(chunk.tail(1))
+        # print(chunk.tail(1).Lat)
+    # chunk.to_csv('../tmp/split_csv_pandas/chunk{}.csv'.format(i), index=False)
+    
+    data = {"latitude": latList, "longitude":longList, "density":densityList}
+    df = pd.DataFrame.from_dict(data)
+    df.to_csv("density_try.csv", sep=",", index=False)
+    
+    
 def main():
     if not os.path.isfile("inat_data.csv"): getData()
-    filterData()
+    # filterData()
+    getGrid()
     
     
 if __name__ == '__main__':
